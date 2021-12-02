@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"encoding/base64"
+	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"log"
@@ -130,9 +131,13 @@ func (cc *SmartContract) setAsset(
 	ctx contractapi.TransactionContextInterface, asset *Asset,
 ) error {
 	b, _ := json.Marshal(asset)
-	return ctx.GetStub().PutState(cc.makeAssetKey(asset.ID), b)
+	err := ctx.GetStub().PutState(cc.makeAssetKey(asset.ID), b)
+	if err != nil {
+		return fmt.Errorf("put state error %v", err)
+	}
+	return nil
 }
 
 func (cc *SmartContract) makeAssetKey(assetID []byte) string {
-	return fmt.Sprintf("%s_%s", KeyAssets, assetID)
+	return fmt.Sprintf("%s_%s", KeyAssets, hex.EncodeToString(assetID))
 }
