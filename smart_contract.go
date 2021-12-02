@@ -56,12 +56,12 @@ type EndAuctionArgs struct {
 }
 
 func (cc *SmartContract) AddAsset(ctx contractapi.TransactionContextInterface, arg string) error {
-	var asset *Asset
-	err := json.Unmarshal([]byte(arg), asset)
+	var asset Asset
+	err := json.Unmarshal([]byte(arg), &asset)
 	if err != nil {
 		return err
 	}
-	return cc.setAsset(ctx, asset)
+	return cc.setAsset(ctx, &asset)
 }
 
 func (cc *SmartContract) BindAuction(ctx contractapi.TransactionContextInterface, arg string) error {
@@ -114,16 +114,16 @@ func (cc *SmartContract) GetAsset(
 func (cc *SmartContract) getAsset(
 	ctx contractapi.TransactionContextInterface, assetID []byte,
 ) (*Asset, error) {
-	var asset *Asset
+	var asset Asset
 	b, err := ctx.GetStub().GetState(cc.makeAssetKey(assetID))
 	if err != nil {
-		return asset, err
+		return nil, err
 	}
 	if b == nil {
-		return asset, fmt.Errorf("asset not found")
+		return nil, fmt.Errorf("asset not found")
 	}
-	err = json.Unmarshal(b, asset)
-	return asset, err
+	err = json.Unmarshal(b, &asset)
+	return &asset, err
 }
 
 func (cc *SmartContract) setAsset(
