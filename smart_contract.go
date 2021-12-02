@@ -104,12 +104,12 @@ func (cc *SmartContract) EndAuction(ctx contractapi.TransactionContextInterface,
 
 func (cc *SmartContract) GetAsset(
 	ctx contractapi.TransactionContextInterface, arg string,
-) (*Asset, error) {
+) ([]byte, error) {
 	assetID, err := base64.StdEncoding.DecodeString(arg)
 	if err != nil {
 		return nil, err
 	}
-	return cc.getAsset(ctx, assetID)
+	return ctx.GetStub().GetState(cc.makeAssetKey(assetID))
 }
 
 func (cc *SmartContract) getAsset(
