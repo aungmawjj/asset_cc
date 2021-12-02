@@ -61,7 +61,8 @@ func (cc *SmartContract) AddAsset(ctx contractapi.TransactionContextInterface, a
 	// if err != nil {
 	// return err
 	// }
-	return ctx.GetStub().PutState("asset1", []byte(arg))
+	return nil
+	// return ctx.GetStub().PutState("asset1", []byte(arg))
 	// return cc.setAsset(ctx, Asset{})
 }
 
